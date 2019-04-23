@@ -2,7 +2,7 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 12/13/2018
 # Date when workable: 02/05/2019
-# Last Updated: 04/05/2019
+# Last Updated: 04/23/2019
 
 import xlrd
 
@@ -63,6 +63,7 @@ class ExcelReader:
         self.excel_format_data = []
         self.excel_format_data_raw = []
         self.cp_name = ""
+        self.cp_names = []
 
 
     def test(self):
@@ -153,6 +154,9 @@ class ExcelReader:
         for row in range(sheet.nrows):
             for column in range(sheet.ncols):
                 self.excel_data_raw = [sheet.cell_value(row, column)]
+                # This appends all possible CP names to the list "cp_names" to later show to the user.
+                if column == 1 and sheet.cell_value(row, column) is not "":
+                    self.cp_names.append(sheet.cell_value(row, column))
 
         excel_format_data_raw = []
 
@@ -604,3 +608,7 @@ class ExcelReader:
     # Returns specific CP name.
     def get_cp_name(self):
         return self.cp_name
+
+    # Returns the list of possible CP names
+    def get_cp_names(self):
+        return self.cp_names

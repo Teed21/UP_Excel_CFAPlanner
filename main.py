@@ -2,7 +2,7 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 12/13/2018
 # Date when workable: 02/05/2019
-# Last Updated: 04/05/2019
+# Last Updated: 04/23/2019
 
 import ExcelReader
 import ExcelWriter
@@ -29,6 +29,16 @@ def check_if_cp_exists(cfa, cp_name):
     cp_exists = planner.check_if_cp_exists(cp_name)
 
     return cp_exists
+
+
+# This function gets all cp names in the selected CFA/Excel doc.
+def get_cp_names(cfa):
+
+    planner = ExcelPlanner.ExcelPlanner(cfa)
+
+    cp_names = planner.get_cp_names()
+
+    return cp_names
 
 
 # This function will handle multiple CFA/ExcelPlanner objects.
@@ -72,9 +82,13 @@ while processed is not True:
         # User is prompted by pop-up to select a file.
         print("Please select your CFA file.", spacing)
         file_path = filedialog.askopenfilename()
-        print("File selected: ", file_path, spacing)
+        file_path_list = file_path.split("/")
+        cfa_file = file_path_list[-1]
+        print("File selected:", cfa_file, " in path:", file_path, spacing)
         # Checking if file exists.
         if os.path.isfile(file_path):
+            # Output all possible CP names
+            print(get_cp_names(file_path))
             # Asking for all CPs for specific CFA
             print("Type in all the CPs for this CFA file one-by-one. When done, type the letter 'd' to continue."
                   , spacing)

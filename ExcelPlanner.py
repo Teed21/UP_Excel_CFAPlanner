@@ -2,7 +2,7 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 02/05/2019
 # Date when workable: 03/21/2019
-# Last Updated: 04/05/2019
+# Last Updated: 04/23/2019
 
 """
     This class file is meant to operate as a median between ExcelReader and ExcelWriter.
@@ -73,6 +73,11 @@ class ExcelPlanner:
     def check_if_cp_exists(self, cp_name):
         is_cp = self.excel_reader_obj.find_cp(self.glb_data, cp_name)
         return is_cp
+
+    # This function returns all possible cp names in the selected excel file.
+    def get_cp_names(self):
+        cp_names = self.excel_reader_obj.get_cp_names()
+        return cp_names
 
     # This function passes over a list of CPs required to be copied over to a new sheet. Getting all relevant
     # information from them and storing it in a large list.
