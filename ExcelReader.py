@@ -155,7 +155,8 @@ class ExcelReader:
             for column in range(sheet.ncols):
                 self.excel_data_raw = [sheet.cell_value(row, column)]
                 # This appends all possible CP names to the list "cp_names" to later show to the user.
-                if column == 1 and sheet.cell_value(row, column) is not "":
+                if row > 2 and column == 1 and sheet.cell_value(row, column) is not "" \
+                        and "/" not in sheet.cell_value(row, column):
                     self.cp_names.append(sheet.cell_value(row, column))
 
         excel_format_data_raw = []
@@ -611,4 +612,8 @@ class ExcelReader:
 
     # Returns the list of possible CP names
     def get_cp_names(self):
-        return self.cp_names
+        filtered_list = []
+        for cp in self.cp_names:
+            if cp is not " ":
+                filtered_list.append(cp)
+        return filtered_list

@@ -88,7 +88,8 @@ while processed is not True:
         # Checking if file exists.
         if os.path.isfile(file_path):
             # Output all possible CP names
-            print(get_cp_names(file_path))
+            print("Found these CP names in file:")
+            print(get_cp_names(file_path), spacing)
             # Asking for all CPs for specific CFA
             print("Type in all the CPs for this CFA file one-by-one. When done, type the letter 'd' to continue."
                   , spacing)
