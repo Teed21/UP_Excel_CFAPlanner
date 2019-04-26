@@ -2,7 +2,7 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 12/13/2018
 # Date when workable: 02/05/2019
-# Last Updated: 04/23/2019
+# Last Updated: 04/26/2019
 
 import xlrd
 
@@ -143,6 +143,14 @@ class ExcelReader:
 
         return self.first_sheet
 
+    # This function helps grab all CP names in the CFA.
+    def grab_all_cp_names(self, cell, row, column):
+        # This appends all possible CP names to the list "cp_names" to later show to the user.
+        if row > 2 and column == 1 and cell is not "" and "/" not in cell and " " not in cell:
+            self.cp_names.append(cell)
+
+        return 0
+
     # Reads in the excel document into a list of lists.
     # Also reads in formatting information from each cell as a number.
     def read_excel_document(self, sheet):
@@ -154,10 +162,9 @@ class ExcelReader:
         for row in range(sheet.nrows):
             for column in range(sheet.ncols):
                 self.excel_data_raw = [sheet.cell_value(row, column)]
-                # This appends all possible CP names to the list "cp_names" to later show to the user.
-                if row > 2 and column == 1 and sheet.cell_value(row, column) is not "" \
-                        and "/" not in sheet.cell_value(row, column):
-                    self.cp_names.append(sheet.cell_value(row, column))
+                # This grabs all cp names in the CFA to display for user later.
+                self.grab_all_cp_names(sheet.cell_value(row, column), row, column)
+
 
         excel_format_data_raw = []
 
@@ -617,3 +624,7 @@ class ExcelReader:
             if cp is not " ":
                 filtered_list.append(cp)
         return filtered_list
+
+    # Returns the list of possible CP names
+    def get_cp_names_and_suggested(self):
+        return self.cp_names

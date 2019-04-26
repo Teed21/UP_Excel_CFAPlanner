@@ -2,15 +2,16 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 12/13/2018
 # Date when workable: 02/05/2019
-# Last Updated: 04/23/2019
+# Last Updated: 04/26/2019
 
-import ExcelReader
-import ExcelWriter
 import ExcelPlanner
+import EmailParser
 # This is for open dialog window.
 import tkinter as tk
 from tkinter import filedialog
 import os
+import datetime as date
+
 
 # These variables set up an invisible window that hosts the file dialog.
 root = tk.Tk()
@@ -20,6 +21,9 @@ root.withdraw()
 #file_path = filedialog.askopenfilename()
 
 spacing = "\n"
+
+# This object handles finding the UP email in user's outlook application.
+up_email = EmailParser.EmailParser()
 
 
 # This function helps check if a CP exists before adding it to a list.
@@ -59,6 +63,35 @@ def multiple_cfa(cfa, cp_names):
 
     return lists
 
+
+# This function handles all suggested CPs by comparing what is inside the CFA, and what was
+# on the email sent by UP.
+def filter_suggested_cps(cfa_cps, email_cps):
+    suggested_cps = []
+    for cp in cfa_cps:
+        if cp in email_cps:
+            if cp in suggested_cps:
+                continue
+            else:
+                suggested_cps.append(cp)
+    if suggested_cps:
+        return suggested_cps
+    else:
+        return "No suggested CPs."
+
+
+# This code block handles the request name, as well as parsing for the S request email.
+print("What is the the request number? (EX: S031)")
+request_name = input("Request Name: ")
+
+# Getting current year to filter emails
+current_year = date.datetime.now()
+current_year = current_year.year
+
+# Finding email based on what subfolder in outlook and current year + request name.
+up_emails = up_email.find_email("Requests", "Request " + str(current_year) + request_name)
+
+
 # This code block gets the amount of CFAs from the user. Will continue to ask until correct input is met.
 is_number = False
 while is_number is not True:
@@ -71,6 +104,7 @@ while is_number is not True:
             is_number = True
     except ValueError:
         print("Data Type incorrect for cfa_input. Must be a number.", spacing)
+
 
 # This code block gets the names of the CFAs and the CPs related to them.
 list_of_planners = []
@@ -90,6 +124,9 @@ while processed is not True:
             # Output all possible CP names
             print("Found these CP names in file:")
             print(get_cp_names(file_path), spacing)
+            # Outputting suggested cps.
+            print("Suggested CPs in this CFA:")
+            print(filter_suggested_cps(get_cp_names(file_path), up_email.find_cps(up_emails)), spacing)
             # Asking for all CPs for specific CFA
             print("Type in all the CPs for this CFA file one-by-one. When done, type the letter 'd' to continue."
                   , spacing)
@@ -132,8 +169,7 @@ for planner_list in list_of_planners:
 # Create new file
 print("Please select where you want to save your new CFA file.", spacing)
 new_file_path = filedialog.askdirectory()
-print("Create new file:\nWrite the request name (EX: S031) and the program will do the rest.")
-request_name = input("Request Name: ")
+print("Creating new file at:\n ", new_file_path)
 new_file = new_file_path + "/" + request_name + "_REO_Testplan-First.xlsx"
 
 temp_planner = ExcelPlanner.ExcelPlanner("new")

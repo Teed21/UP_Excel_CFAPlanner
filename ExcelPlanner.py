@@ -2,7 +2,7 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 02/05/2019
 # Date when workable: 03/21/2019
-# Last Updated: 04/23/2019
+# Last Updated: 04/26/2019
 
 """
     This class file is meant to operate as a median between ExcelReader and ExcelWriter.
@@ -226,7 +226,7 @@ class ExcelPlanner:
         for cords in list_of_cp_cords:
             # Will find if there is only one occurrence of CP. If so, only send through one list of information.
             if len(cords) <= 1:
-                print("One occurrence of CP")
+                # print("One occurrence of CP")
                 list_of_cp_objects.append(self.create_cp_object(cords, list_of_cp_names[iteration], 1))
             else:
                 list_of_cp_objects.append(self.create_cp_object(cords, list_of_cp_names[iteration], 2))
