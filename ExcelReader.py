@@ -158,13 +158,27 @@ class ExcelReader:
         # Rows come first, then column.
         self.excel_data = [[sheet.cell_value(r, c) for c in range(sheet.ncols)] for r in range(sheet.nrows)]
 
+        """
+        row_iter = 0
+        # Accounting for extra elements in self.excel_data.
+        for row in self.excel_data:
+            column_iter = 0
+            for column in row:
+                column_iter += 1
+                if column_iter >= 13 and column == "":
+                    #print("Found extra item in list.", row)
+                    row.pop(column_iter-1)
+                    self.excel_data[row_iter] = row
+            row_iter += 1
+        """
+
         # For every cell in the sheet, get the cell text info.
         for row in range(sheet.nrows):
             for column in range(sheet.ncols):
                 self.excel_data_raw = [sheet.cell_value(row, column)]
+                #self.excel_data_raw.append([sheet.cell_value(row, column)])
                 # This grabs all cp names in the CFA to display for user later.
                 self.grab_all_cp_names(sheet.cell_value(row, column), row, column)
-
 
         excel_format_data_raw = []
 
@@ -213,9 +227,9 @@ class ExcelReader:
 
                 self.excel_format_data_raw.append([font_style, borders])
 
-        # Appending all the formatting information into a relevant list (12 column lists).
-        for index in range(0, len(self.excel_format_data_raw), 12):
-            self.excel_format_data.append(self.excel_format_data_raw[index:index + 12])
+        # Appending all the formatting information into a relevant list (how long the text columns are).
+        for index in range(0, len(self.excel_format_data_raw), len(self.excel_data[0])):
+            self.excel_format_data.append(self.excel_format_data_raw[index:index + len(self.excel_data[0])])
 
         return self.excel_data
 
