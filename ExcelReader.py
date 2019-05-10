@@ -2,7 +2,7 @@
 # Email: tylerwright17@yahoo.com / Tyler.Wright@hitachirail.com
 # Date started: 12/13/2018
 # Date when workable: 02/05/2019
-# Last Updated: 04/26/2019
+# Last Updated: 05/10/2019
 
 import xlrd
 
@@ -559,6 +559,19 @@ class ExcelReader:
                 break
             codeline_info.append(dataset[row_count])
             row_count += 1
+
+        # Formatting the codeline type info - shortening it to fit in excel cell.
+        codeline_type = codeline_info[1][1]
+
+        if "GENISYS" in codeline_type:
+            codeline_info[1][1] = "GENISYS"
+        elif "SCS-128" in codeline_type:
+            codeline_info[1][1] = "SCS-128"
+        elif "ATCS" in codeline_type:
+            codeline_info[1][1] = "ATCS"
+        else:
+            print("Could not find codeline type text in ExcelReader(copy_codeline_text_info)")
+
         return codeline_info
 
     # Copies all codeline formatting information.
