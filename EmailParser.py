@@ -38,6 +38,10 @@ class EmailParser:
                 # print(email.Subject)
                 s_requests.append(email)
 
+        # This helps set a name for the final excel file, if the user wants to name the excel file differently.
+        if not s_requests:
+            return False
+
         return s_requests
 
     def find_cps(self, emails):

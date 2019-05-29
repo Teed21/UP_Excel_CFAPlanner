@@ -25,6 +25,7 @@ spacing = "\n"
 # This object handles finding the UP email in user's outlook application.
 up_email = EmailParser.EmailParser()
 
+excel_request_name = "_REO_Testplan-First.xlsx"
 
 # This function helps check if a CP exists before adding it to a list.
 def check_if_cp_exists(cfa, cp_name):
@@ -81,7 +82,8 @@ def filter_suggested_cps(cfa_cps, email_cps):
 
 
 # This code block handles the request name, as well as parsing for the S request email.
-print("What is the the request number? (EX: S031)")
+print("What is the request number? (EX: S031)\n"
+      "\tNote: This will be used to find the relevant email in your Outlook email.")
 request_name = input("Request Name: ")
 
 # Getting current year to filter emails
@@ -90,6 +92,24 @@ current_year = current_year.year
 
 # Finding email based on what subfolder in outlook and current year + request name.
 up_emails = up_email.find_email("Requests", "Request " + str(current_year) + request_name)
+new_excel_file_name = request_name
+email_loop = up_emails
+while email_loop is False:
+    print("\nProblem finding email in Outlook to find suggested CPs.")
+    correct_email = input("Would you like to:\n"
+                          "1. Try to find email again.\n"
+                          "2. Continue anyway.\n"
+                          ":")
+    if int(correct_email) == 1:
+        request_name = input("Request Name: ")
+        up_emails = up_email.find_email("Requests", "Request " + str(current_year) + request_name)
+        email_loop = up_emails
+    elif int(correct_email) == 2:
+        print("Continuing...", spacing)
+        email_loop = True
+    else:
+        print("Input not recognized. Please choose a proper option.")
+
 
 
 # This code block gets the amount of CFAs from the user. Will continue to ask until correct input is met.
@@ -126,7 +146,10 @@ while processed is not True:
             print(get_cp_names(file_path), spacing)
             # Outputting suggested cps.
             print("Suggested CPs in this CFA:")
-            print(filter_suggested_cps(get_cp_names(file_path), up_email.find_cps(up_emails)), spacing)
+            if up_emails is False:
+                print("No suggested CPs to display.")
+            else:
+                print(filter_suggested_cps(get_cp_names(file_path), up_email.find_cps(up_emails)), spacing)
             # Asking for all CPs for specific CFA
             print("Type in all the CPs for this CFA file one-by-one. When done, type the letter 'd' to continue."
                   , spacing)
@@ -167,33 +190,28 @@ for planner_list in list_of_planners:
         master_list[1] += planner_list[1]
 
 # Create new file
-print("Please select where you want to save your new CFA file.", spacing)
+excel_file_loop = True
+while excel_file_loop:
+    excel_file_decision = input("File is currently named: " + new_excel_file_name + "\n"
+                                "Would you like to change the name?\n"
+                                "1. Yes\n"
+                                "2. No\n"
+                                ":")
+    if int(excel_file_decision) == 1:
+        new_excel_file_name = input("Excel file name: ")
+        excel_file_loop = False
+    elif int(excel_file_decision) == 2:
+        print("Excel file will be named: " + new_excel_file_name)
+        excel_file_loop = False
+    else:
+        print("Input not recognized, please select a proper option.")
+print("Please select where you want to save your new CFA file.")
 new_file_path = filedialog.askdirectory()
 print("Creating new file at:\n ", new_file_path)
-new_file = new_file_path + "/" + request_name + "_REO_Testplan-First.xlsx"
+new_file = new_file_path + "/" + request_name + excel_request_name
 
 temp_planner = ExcelPlanner.ExcelPlanner("new")
 
 temp_planner.process_and_write_all_cp_information(master_list, new_file)
 
 print("Done.")
-
-"""
-planner = ExcelPlanner.ExcelPlanner("OR05CFA.xls")
-
-#planner = ExcelPlanner.ExcelPlanner("NV12CFA.xls", "multiple_cp_test3.xlsx")
-
-list_of_cps = ["N199", "N201", "N211", "N214"]
-#list_of_cps = ["F487", "F488", "F497"]
-
-list_of_gen_cp_info = planner.get_cp_cords(list_of_cps)
-list_of_cp_cords = list_of_gen_cp_info[0]
-list_of_cp_names = list_of_gen_cp_info[1]
-
-cp_objects = planner.get_all_cp_information(list_of_cp_cords, list_of_cp_names)
-
-lists = planner.return_combined_lists(cp_objects)
-
-planner.process_and_write_all_cp_information(lists, "multiple_cp_test6.xlsx")
-
-"""
