@@ -249,7 +249,7 @@ class ExcelReader:
                 coordinates.append(position_y)
                 position_y += 1
                 for x in index:
-                    if cp_name in x:
+                    if cp_name in x and position_x > 0:
                         coordinates.append(position_x)
                         position_x = 0
                         break
